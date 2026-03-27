@@ -11,30 +11,20 @@
             box-sizing: border-box;
         }
         body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
             min-height: 100vh;
             background: #000;
         }
-        /* 画卷容器 */
         .scroll-banner {
             width: 100vw;
-            height: 600px; /* 自定义画卷高度 */
-            background: url("https://img0.baidu.com/it/u=1297311139,3829221139&fm=253&fmt=auto&app=138&f=JPEG?w=800&h=356") repeat-x;
+            height: 600px;
+            /* 替换为你的本地图片路径，或用这个稳定的图床链接 */
+            background: url("https://picsum.photos/id/1036/1200/600") repeat-x;
             background-size: auto 100%;
-            /* 动画名称 时长 线性匀速 无限循环 */
             animation: scrollMove 60s linear infinite;
         }
-
-        /* 从左向右滚动关键帧 */
         @keyframes scrollMove {
-            0% {
-                background-position: 0 center;
-            }
-            100% {
-                background-position: -100% center;
-            }
+            0% { background-position: 0 center; }
+            100% { background-position: -200% center; }
         }
     </style>
 </head>
