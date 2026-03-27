@@ -10,54 +10,61 @@
             align-items: center;
             min-height: 100vh;
             margin: 0;
-            background: #f4f4f4;
+            background: #f0f0f0;
         }
-        .cube-container {
-            position: relative;
+        .cube {
             width: 200px;
             height: 200px;
+            position: relative;
+            transform-style: preserve-3d;
+            transform: rotateX(30deg) rotateY(45deg);
         }
-        .cube-face {
+        .face {
             position: absolute;
             width: 200px;
             height: 200px;
-            opacity: 0.85;
+            opacity: 0.8;
         }
-
         /* 正面 */
-        .face-front {
-            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
-            z-index: 3;
+        .front {
+            background: linear-gradient(135deg, #ffecd2, #fcb69f);
+            transform: translateZ(100px);
         }
-
-        /* 右侧面 */
-        .face-right {
-            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
-            transform: skewY(30deg) translate(100px, -50px);
-            z-index: 2;
+        /* 背面 */
+        .back {
+            background: linear-gradient(135deg, #a8edea, #fed6e3);
+            transform: translateZ(-100px) rotateY(180deg);
         }
-
-        /* 左侧面 */
-        .face-left {
-            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
-            transform: skewY(-30deg) translate(-100px, -50px);
-            z-index: 2;
+        /* 右面 */
+        .right {
+            background: linear-gradient(135deg, #ff9a9e, #fecfef);
+            transform: translateX(100px) rotateY(90deg);
         }
-
-        /* 顶面 */
-        .face-top {
-            background: linear-gradient(135deg, #fdcbf1 0%, #e6dee9 100%);
-            transform: skewX(30deg) translate(-50px, -100px);
-            z-index: 1;
+        /* 左面 */
+        .left {
+            background: linear-gradient(135deg, #fdcbf1, #e6dee9);
+            transform: translateX(-100px) rotateY(-90deg);
+        }
+        /* 上面 */
+        .top {
+            background: linear-gradient(135deg, #a18cd1, #fbc2eb);
+            transform: translateY(-100px) rotateX(90deg);
+        }
+        /* 下面 */
+        .bottom {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            transform: translateY(100px) rotateX(-90deg);
         }
     </style>
 </head>
 <body>
-    <div class="cube-container">
-        <div class="cube-face face-front"></div>
-        <div class="cube-face face-right"></div>
-        <div class="cube-face face-left"></div>
-        <div class="cube-face face-top"></div>
+    <div class="cube">
+        <div class="face front"></div>
+        <div class="face back"></div>
+        <div class="face right"></div>
+        <div class="face left"></div>
+        <div class="face top"></div>
+        <div class="face bottom"></div>
     </div>
 </body>
 </html>
