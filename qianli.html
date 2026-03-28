@@ -1,34 +1,59 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>千里江山图 横向流动动画</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
         body {
-            min-height: 100vh;
-            background: #000;
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 0 20px;
         }
-        .scroll-banner {
-            width: 100vw;
-            height: 600px;
-            /* 替换为你的本地图片路径，或用这个稳定的图床链接 */
-            background: url("https://img.dpm.org.cn/Uploads/Picture/2017/04/01/s58defb9d45b7f.jpg") repeat-x;
-            background-size: auto 100%;
-            animation: scrollMove 60s linear infinite;
+        h1 {
+            font-family: 'Segoe UI', sans-serif;
+            color: #333;
         }
-        @keyframes scrollMove {
-            0% { background-position: 0 center; }
-            100% { background-position: -200% center; }
+        ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+        li {
+            padding: 8px;
+            margin: 4px 0;
+        }
+        .meat {
+            background-color: lightcoral;
+        }
+        .vegetable {
+            background-color: lightgreen;
+        }
+        .dairy {
+            background-color: lightgoldenrodyellow;
+        }
+        .instructions {
+            font-style: italic;
         }
     </style>
 </head>
 <body>
-    <div class="scroll-banner"></div>
+    <h1>Grilled Cheese Sandwich with Bacon and Tomato</h1>
+
+    <h2>Ingredients</h2>
+    <ul>
+        <li class="meat">Bacon</li>
+        <li class="dairy">Sliced cheese</li>
+        <li class="dairy">Butter</li>
+        <li class="vegetable">Tomato slices</li>
+        <li>Bread slices</li>
+    </ul>
+
+    <h2>Instructions</h2>
+    <div class="instructions">
+        <p>1. Cook the bacon in a pan until crispy, then set aside.</p >
+        <p>2. Butter one side of each bread slice.</p >
+        <p>3. Place a slice of cheese on the unbuttered side of one bread slice.</p >
+        <p>4. Add cooked bacon and tomato slices on top of the cheese.</p >
+        <p>5. Cover with another slice of bread, buttered side facing out.</p >
+        <p>6. Grill the sandwich in a pan over medium heat until both sides are golden brown and the cheese is melted.</p >
+    </div>
 </body>
 </html>
