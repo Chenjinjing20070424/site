@@ -11,30 +11,26 @@
             box-sizing: border-box;
         }
         body {
+            min-height: 100vh;
             background: #000;
             overflow: hidden;
-            height: 100vh;
         }
-        .container {
-            height: 200vh; /* 两张图高度 */
-            animation: scrollMove 90s ease-out infinite;
-        }
-        img {
+        .scroll-banner {
             width: 100vw;
             height: 100vh;
-            object-fit: cover;
-            display: block;
+            /* 国内稳定可访问的千里江山图竖版链接 */
+            background: url("https://img1.baidu.com/it/u=2747330779,2275763028&fm=26&fmt=auto&app=138&f=JPEG?w=960&h=3989") repeat-y;
+            background-size: 100% auto;
+            /* 关键：用 ease-out 实现先快后慢 */
+            animation: scrollMove 90s ease-out infinite;
         }
         @keyframes scrollMove {
-            0% { transform: translateY(0); }
-            100% { transform: translateY(-100vh); }
+            0% { background-position: center 0; }
+            100% { background-position: center -100%; }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        < img src="https://p1.ssl.qhimg.com/t01d8a8a4ef07a8b7c0.jpg" alt="千里江山图">
-        < img src="https://p1.ssl.qhimg.com/t01d8a8a4ef07a8b7c0.jpg" alt="千里江山图">
-    </div>
+    <div class="scroll-banner"></div>
 </body>
 </html>
