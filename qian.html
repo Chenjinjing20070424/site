@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>千里江山图 - 缓动放映</title>
+    <title>千里江山图 纵向流动</title>
     <style>
         * {
             margin: 0;
@@ -11,44 +11,25 @@
             box-sizing: border-box;
         }
         body {
+            min-height: 100vh;
+            background: #000;
             overflow: hidden;
-            background: #f0e6d2;
         }
-        .scroll-container {
+        .scroll-banner {
             width: 100vw;
             height: 100vh;
-            overflow: hidden;
-            position: relative;
+            /* 用国内稳定可访问的千里江山图竖版链接 */
+            background: url("https://img1.baidu.com/it/u=2747330779,2275763028&fm=26&fmt=auto&app=138&f=JPEG?w=960&h=3989") repeat-y;
+            background-size: 100% auto;
+            animation: scrollMove 90s linear infinite;
         }
-        .painting-wrapper {
-            height: 100%;
-            display: flex;
-            align-items: center;
-            /* 30秒总时长，cubic-bezier 实现先快后慢的刹车感 */
-            animation: slowScroll 30s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
-        }
-        .painting {
-            height: 90vh;
-            width: auto;
-            object-fit: contain;
-        }
-        @keyframes slowScroll {
-            0% {
-                transform: translateX(0);
-            }
-            100% {
-                /* 滚动到画卷最右端，刚好完整展示 */
-                transform: translateX(calc(-100% + 100vw));
-            }
+        @keyframes scrollMove {
+            0% { background-position: center 0; }
+            100% { background-position: center -100%; }
         }
     </style>
 </head>
 <body>
-    <div class="scroll-container">
-        <div class="painting-wrapper">
-            <!-- 替换为你的千里江山图图片地址 -->
-            < img src="https://picsum.photos/id/1036/3989/960" alt="千里江山图" class="painting">
-        </div>
-    </div>
+    <div class="scroll-banner"></div>
 </body>
 </html>
