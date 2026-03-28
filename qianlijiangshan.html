@@ -2,51 +2,403 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>千里江山图 - 先快后慢滚动</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>千里江山图 · 手卷拖拽惯性浏览</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
         }
         body {
+            background: #2a2418;
+            font-family: 'Segoe UI', '华文楷书', 'Microsoft YaHei', 'Noto Serif SC', serif;
             min-height: 100vh;
-            background: #000;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
+            overflow: hidden;
         }
-        /* 容器：只显示窗口大小，隐藏超出部分 */
-        .scroll-container {
-            width: 100vw;
-            height: 600px;
+        .scroll-viewer {
+            width: 100%;
+            height: 100vh;
+            background: #1e2a16;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            box-shadow: inset 0 0 40px rgba(0,0,0,0.5), 0 10px 25px rgba(0,0,0,0.3);
             overflow: hidden;
             position: relative;
         }
-        /* 千里江山图：从左上角开始，先快后慢滚动 */
-        .qianli-jiangshan {
-            width: 300%; /* 足够长的长卷 */
-            height: 100%;
-            background: url("https://p1.ssl.qhimg.com/t01d9a2b01d0b7b343a.jpg") no-repeat left top;
-            background-size: cover;
-            /* ease-out：先快后慢，forwards：滚动结束后停住 */
-            animation: scrollBrake 20s ease-out forwards;
+        .scroll-viewer::before,
+        .scroll-viewer::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            right: 0;
+            height: 18px;
+            background: linear-gradient(90deg, #c7a45b, #e9dbbd, #c7a45b);
+            z-index: 10;
+            pointer-events: none;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
         }
-        /* 关键帧：从左上角开始，横向滚动到合适位置 */
-        @keyframes scrollBrake {
-            0% {
-                transform: translateX(0); /* 起点：左上角 */
+        .scroll-viewer::before {
+            top: 0;
+            border-bottom: 1px solid #efdfa8;
+        }
+        .scroll-viewer::after {
+            bottom: 0;
+            border-top: 1px solid #efdfa8;
+        }
+        .handscroll {
+            width: 100%;
+            height: auto;
+            overflow: hidden;
+            cursor: grab;
+            position: relative;
+            flex: 1;
+            display: flex;
+            align-items: center;
+            background: #2f4025;
+            background-image: radial-gradient(circle at 10% 30%, rgba(210, 180, 100, 0.08) 2%, transparent 2.5%);
+            background-size: 28px 28px;
+        }
+        .handscroll:active {
+            cursor: grabbing;
+        }
+        .scroll-content {
+            display: inline-block;
+            padding: 25px 40px;
+            will-change: transform;
+            transition: none;
+            line-height: 0;
+        }
+        .painting {
+            display: block;
+            height: 70vh;
+            width: auto;
+            max-width: none;
+            border-radius: 8px;
+            box-shadow: 0 20px 35px rgba(0, 0, 0, 0.5), 0 0 0 6px #f7f0ca, 0 0 0 12px #b48b48;
+            pointer-events: none;
+            background: #d9cb9a;
+        }
+        .scroll-content::before,
+        .scroll-content::after {
+            content: "";
+            display: inline-block;
+            width: 32px;
+            height: 68px;
+            background: radial-gradient(ellipse at center, #c39452, #7a4c29);
+            border-radius: 40px;
+            vertical-align: middle;
+            margin: 0 20px;
+            box-shadow: 3px 5px 8px rgba(0,0,0,0.4);
+            transition: all 0.2s;
+        }
+        .info-panel {
+            position: absolute;
+            bottom: 18px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            pointer-events: none;
+            z-index: 20;
+            color: #ece3c9;
+            text-shadow: 1px 1px 2px #1e2a0c;
+            font-size: 0.85rem;
+            letter-spacing: 2px;
+            background: linear-gradient(90deg, transparent, rgba(30,40,15,0.6), transparent);
+            padding: 8px;
+            backdrop-filter: blur(3px);
+            font-weight: 400;
+        }
+        .info-panel span {
+            display: inline-block;
+            background: rgba(0,0,0,0.4);
+            padding: 5px 14px;
+            border-radius: 40px;
+            font-size: 0.8rem;
+        }
+        @media (max-width: 768px) {
+            .painting {
+                height: 55vh;
             }
-            100% {
-                transform: translateX(-66.6%); /* 终点：滚动2/3长度，展示完整长卷 */
+            .scroll-content {
+                padding: 15px 20px;
             }
+            .scroll-content::before,
+            .scroll-content::after {
+                width: 22px;
+                height: 48px;
+                margin: 0 12px;
+            }
+            .info-panel span {
+                font-size: 0.7rem;
+            }
+        }
+        .painting.loading {
+            opacity: 0.6;
+            filter: blur(2px);
         }
     </style>
 </head>
 <body>
-    <div class="scroll-container">
-        <div class="qianli-jiangshan"></div>
+<div class="scroll-viewer">
+    <div class="handscroll" id="handscroll">
+        <div class="scroll-content" id="scrollContent">
+            < img class="painting" id="paintingImg" 
+                 src="https://upload.wikimedia.org/wikipedia/commons/9/96/%E5%8D%83%E9%87%8C%E6%B1%9F%E5%B1%B1%E5%9B%BE_%E5%8C%97%E5%AE%8B_%E7%8E%8B%E5%B8%8C%E5%AD%9F.jpg"
+                 alt="千里江山图 王希孟 北宋 故宫博物院藏"
+                 crossorigin="anonymous"
+                 referrerpolicy="no-referrer">
+        </div>
     </div>
+    <div class="info-panel">
+        <span>🖱️ 按住画卷拖拽 → 松手后有惯性刹车 · 由快至缓 宛如卷轴余韵</span>
+    </div>
+</div>
+<script>
+    (function(){
+        const container = document.getElementById('handscroll');
+        const contentWrap = document.getElementById('scrollContent');
+        const imgEl = document.getElementById('paintingImg');
+
+        let startX = 0;
+        let startTranslate = 0;
+        let currentTranslate = 0;
+        let isDragging = false;
+        let lastMoveTime = 0;
+        let lastMoveX = 0;
+        let velocity = 0;
+        let animationFrame = null;
+        let isAnimating = false;
+
+        let minBound = 0;
+        let maxBound = 0;
+        const DAMPING = 0.93;
+        const STOP_VELOCITY = 0.3;
+
+        function updateDimensions() {
+            if(!container || !contentWrap) return;
+            const containerRect = container.getBoundingClientRect();
+            const contentRect = contentWrap.getBoundingClientRect();
+            const containerWidth = containerRect.width;
+            const contentWidth = contentRect.width;
+            if(contentWidth <= containerWidth) {
+                minBound = 0;
+                maxBound = 0;
+            } else {
+                minBound = -(contentWidth - containerWidth);
+                maxBound = 0;
+            }
+            let newTranslate = currentTranslate;
+            if(newTranslate > maxBound) newTranslate = maxBound;
+            if(newTranslate < minBound) newTranslate = minBound;
+            if(newTranslate !== currentTranslate) {
+                currentTranslate = newTranslate;
+                applyTranslate(currentTranslate);
+            }
+        }
+
+        function applyTranslate(px) {
+            if(!contentWrap) return;
+            contentWrap.style.transform = `translate3d(${px}px, 0, 0)`;
+        }
+
+        function clampTranslate(value) {
+            if(value > maxBound) return maxBound;
+            if(value < minBound) return minBound;
+            return value;
+        }
+
+        function stopInertia() {
+            if(animationFrame) {
+                cancelAnimationFrame(animationFrame);
+                animationFrame = null;
+            }
+            isAnimating = false;
+        }
+
+        function startInertia(initialVelocity) {
+            stopInertia();
+            if(Math.abs(initialVelocity) < STOP_VELOCITY) return;
+            let vel = initialVelocity;
+            let lastTimestamp = null;
+            let currentPos = currentTranslate;
+            function inertiaStep(timestamp) {
+                if(!isAnimating) return;
+                if(!lastTimestamp) {
+                    lastTimestamp = timestamp;
+                    animationFrame = requestAnimationFrame(inertiaStep);
+                    return;
+                }
+                let delta = Math.min(100, timestamp - lastTimestamp);
+                if(delta <= 0) {
+                    lastTimestamp = timestamp;
+                    animationFrame = requestAnimationFrame(inertiaStep);
+                    return;
+                }
+                let step = vel * delta;
+                let newPos = currentPos + step;
+                let clamped = clampTranslate(newPos);
+                let clampedFlag = (clamped !== newPos);
+                currentPos = clamped;
+                currentTranslate = currentPos;
+                applyTranslate(currentTranslate);
+                vel = vel * DAMPING;
+                if(clampedFlag) {
+                    vel = 0;
+                }
+                if(Math.abs(vel) < STOP_VELOCITY) {
+                    stopInertia();
+                    return;
+                }
+                lastTimestamp = timestamp;
+                animationFrame = requestAnimationFrame(inertiaStep);
+            }
+            isAnimating = true;
+            animationFrame = requestAnimationFrame(inertiaStep);
+        }
+
+        function getClientXFromEvent(e) {
+            let clientX = 0;
+            if(e.type === 'mousedown' || e.type === 'mousemove' || e.type === 'mouseup') {
+                clientX = e.clientX;
+            } else if(e.touches) {
+                if(e.touches.length) clientX = e.touches[0].clientX;
+                else if(e.changedTouches) clientX = e.changedTouches[0].clientX;
+            }
+            return clientX;
+        }
+
+        function onDragStart(e) {
+            stopInertia();
+            isDragging = true;
+            let clientX = getClientXFromEvent(e);
+            startX = clientX;
+            startTranslate = currentTranslate;
+            lastMoveTime = Date.now();
+            lastMoveX = clientX;
+            velocity = 0;
+            container.style.cursor = 'grabbing';
+            e.preventDefault();
+        }
+
+        function onDragMove(e) {
+            if(!isDragging) return;
+            e.preventDefault();
+            let clientX = getClientXFromEvent(e);
+            let now = Date.now();
+            let deltaTime = Math.max(1, now - lastMoveTime);
+            let deltaX = clientX - lastMoveX;
+            if(deltaTime > 0) {
+                let instantVel = deltaX / deltaTime;
+                velocity = instantVel * 0.7 + velocity * 0.3;
+            }
+            let offsetX = clientX - startX;
+            let newTranslate = startTranslate + offsetX;
+            let clamped = clampTranslate(newTranslate);
+            currentTranslate = clamped;
+            applyTranslate(currentTranslate);
+            lastMoveX = clientX;
+            lastMoveTime = now;
+        }
+
+        function onDragEnd(e) {
+            if(!isDragging) return;
+            isDragging = false;
+            container.style.cursor = 'grab';
+            e.preventDefault();
+            if(Math.abs(velocity) > 0.2) {
+                startInertia(velocity);
+            }
+            velocity = 0;
+        }
+
+        let wheelTimer = null;
+        let wheelDeltaX = 0;
+
+        function onWheel(e) {
+            e.preventDefault();
+            let delta = e.deltaX !== 0 ? e.deltaX : e.deltaY;
+            if(Math.abs(delta) < 5) return;
+            stopInertia();
+            let step = delta * 0.8;
+            let newTranslate = currentTranslate + step;
+            let clamped = clampTranslate(newTranslate);
+            currentTranslate = clamped;
+            applyTranslate(currentTranslate);
+            wheelDeltaX = delta * 1.2;
+            if(wheelTimer) clearTimeout(wheelTimer);
+            wheelTimer = setTimeout(() => {
+                if(Math.abs(wheelDeltaX) > 2) {
+                    let inertiaVel = wheelDeltaX / 25;
+                    if(Math.abs(inertiaVel) > 0.1) startInertia(inertiaVel);
+                }
+                wheelDeltaX = 0;
+            }, 80);
+        }
+                container.addEventListener('wheel', onWheel, { passive: false });
+        container.addEventListener('mousedown', onDragStart);
+        window.addEventListener('mousemove', onDragMove);
+        window.addEventListener('mouseup', onDragEnd);
+        container.addEventListener('touchstart', onDragStart, { passive: false });
+        window.addEventListener('touchmove', onDragMove, { passive: false });
+        window.addEventListener('touchend', onDragEnd);
+        container.addEventListener('touchcancel', onDragEnd);
+
+        let resizeTimeout;
+        window.addEventListener('resize', () => {
+            if(resizeTimeout) clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(() => {
+                updateDimensions();
+                let clamped = clampTranslate(currentTranslate);
+                if(clamped !== currentTranslate) {
+                    currentTranslate = clamped;
+                    applyTranslate(currentTranslate);
+                }
+            }, 150);
+        });
+
+        if(imgEl) {
+            if(imgEl.complete && imgEl.naturalWidth > 0) {
+                updateDimensions();
+                currentTranslate = 0;
+                applyTranslate(0);
+            } else {
+                imgEl.onload = () => {
+                    updateDimensions();
+                    currentTranslate = 0;
+                    applyTranslate(0);
+                };
+            }
+            imgEl.onerror = () => console.warn("图片加载失败，请检查网络");
+            imgEl.addEventListener('dragstart', (e) => e.preventDefault());
+        } else {
+            updateDimensions();
+        }
+
+        setTimeout(() => {
+            updateDimensions();
+            currentTranslate = 0;
+            applyTranslate(0);
+        }, 100);
+
+        container.addEventListener('contextmenu', (e) => e.preventDefault());
+        setInterval(() => {
+            if(!isDragging && !isAnimating) {
+                let clamped = clampTranslate(currentTranslate);
+                if(clamped !== currentTranslate) {
+                    currentTranslate = clamped;
+                    applyTranslate(currentTranslate);
+                }
+            }
+        }, 300);
+    })();
+</script>
 </body>
 </html>
