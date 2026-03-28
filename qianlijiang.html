@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>千里江山图 纵向流动动画</title>
+    <title>千里江山图 纵向流动</title>
     <style>
         * {
             margin: 0;
@@ -13,20 +13,19 @@
         body {
             min-height: 100vh;
             background: #000;
-            overflow: hidden; /* 隐藏滚动条 */
+            overflow: hidden;
         }
         .scroll-banner {
             width: 100vw;
             height: 100vh;
-            /* 用纵向的千里江山图链接，保证上下滚动效果 */
-            background: url("https://k.sinaimg.cn/n/sinakd20201112s/467/w800h6067/20201112/08a6-kcunqze3837469.jpg/w700d1q75cms.jpg?by=cms_fixed_width") repeat-y;
+            /* 用国内稳定可访问的千里江山图竖版链接 */
+            background: url("https://img1.baidu.com/it/u=2747330779,2275763028&fm=26&fmt=auto&app=138&f=JPEG?w=960&h=3989") repeat-y;
             background-size: 100% auto;
-            animation: scrollMove 60s linear infinite;
+            animation: scrollMove 90s linear infinite;
         }
-        /* 关键：修改为纵向背景位置变化 */
         @keyframes scrollMove {
             0% { background-position: center 0; }
-            100% { background-position: center -200%; }
+            100% { background-position: center -100%; }
         }
     </style>
 </head>
