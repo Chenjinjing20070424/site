@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>千里江山图 先快后慢纵向流动</title>
+    <title>千里江山图 纵向流动动画</title>
     <style>
         * {
             margin: 0;
@@ -13,20 +13,20 @@
         body {
             min-height: 100vh;
             background: #000;
-            overflow: hidden;
+            overflow: hidden; /* 隐藏滚动条 */
         }
         .scroll-banner {
             width: 100vw;
             height: 100vh;
-            /* 国内稳定可访问的千里江山图竖版链接 */
-            background: url("https://gd-hbimg.huaban.com/c4cb93ef0179735466d312c3544ada224db557887afd83-lTxPFf_fw240webp") repeat-y;
+            /* 用纵向的千里江山图链接，保证上下滚动效果 */
+            background: url("https://picsum.photos/id/1036/600/1200") repeat-y;
             background-size: 100% auto;
-            /* 关键：用 ease-out 实现先快后慢 */
-            animation: scrollMove 90s ease-out infinite;
+            animation: scrollMove 60s linear infinite;
         }
+        /* 关键：修改为纵向背景位置变化 */
         @keyframes scrollMove {
             0% { background-position: center 0; }
-            100% { background-position: center -100%; }
+            100% { background-position: center -200%; }
         }
     </style>
 </head>
