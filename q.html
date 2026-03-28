@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>千里江山图 先快后慢纵向流动</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            min-height: 100vh;
+            background: #000;
+            overflow: hidden;
+        }
+        .scroll-banner {
+            width: 100vw;
+            height: 100vh;
+            /* 用国内可秒开的稳定图床链接 */
+            background: url("https://pic.ntimg.cn/file/20230410/9448593_1681107207422.jpg") repeat-y;
+            background-size: 100% auto;
+            /* 先快后慢的动画效果 */
+            animation: scrollMove 90s ease-out infinite;
+        }
+        @keyframes scrollMove {
+            0% { background-position: center 0; }
+            100% { background-position: center -100%; }
+        }
+    </style>
+</head>
+<body>
+    <div class="scroll-banner"></div>
+</body>
+</html>
