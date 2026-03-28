@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>千里江山图 横向流动动画</title>
+    <title>千里江山图 纵向流动</title>
     <style>
         * {
             margin: 0;
@@ -13,17 +13,19 @@
         body {
             min-height: 100vh;
             background: #000;
+            overflow: hidden;
         }
         .scroll-banner {
             width: 100vw;
-            height: 600px;"C:\Users\陈金晶\Desktop\4cd9b02be67a8dcd87a356db3eea9c0f.jpg"
-            background: url("https://picsum.photos/id/1036/1200/600") repeat-x;
-            background-size: auto 100%;
-            animation: scrollMove 60s linear infinite;
+            height: 100vh;
+            /* 用国内稳定可访问的千里江山图竖版链接 */
+            background: url("https://img1.baidu.com/it/u=2747330779,2275763028&fm=26&fmt=auto&app=138&f=JPEG?w=960&h=3989") repeat-y;
+            background-size: 100% auto;
+            animation: scrollMove 90s linear infinite;
         }
         @keyframes scrollMove {
-            0% { background-position: 0 center; }
-            100% { background-position: -200% center; }
+            0% { background-position: center 0; }
+            100% { background-position: center -100%; }
         }
     </style>
 </head>
@@ -31,3 +33,4 @@
     <div class="scroll-banner"></div>
 </body>
 </html>
+
