@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>千里江山图 - 惯性拖拽放映</title>
+    <title>千里江山图 横向流动动画</title>
     <style>
         * {
             margin: 0;
@@ -11,115 +11,24 @@
             box-sizing: border-box;
         }
         body {
-            overflow: hidden;
-            background: #1a3a2a;
-            height: 100vh;
+            min-height: 100vh;
+            background: #000;
         }
-        .scroll-container {
+        .scroll-banner {
             width: 100vw;
-            height: 100vh;
-            overflow: hidden;
-            position: relative;
-            cursor: grab;
+            height: 600px;
+            /* 替换为你的本地图片路径，或用这个稳定的图床链接 */
+            background: url("https://picsum.photos/id/1036/1200/600") repeat-x;
+            background-size: auto 100%;
+            animation: scrollMove 60s linear infinite;
         }
-        .scroll-container:active {
-            cursor: grabbing;
-        }
-        .painting-wrapper {
-            height: 100%;
-            display: flex;
-            align-items: center;
-            position: absolute;
-        }
-        .painting {
-            height: 90vh;
-            width: auto;
-            object-fit: contain;
-            user-select: none;
+        @keyframes scrollMove {
+            0% { background-position: 0 center; }
+            100% { background-position: -200% center; }
         }
     </style>
 </head>
 <body>
-    <div class="scroll-container">
-        <div class="painting-wrapper">
-            < img 
-                class="painting" 
-                id="paintingImg"
-                src="https://picsum.photos/id/1036/3989/960" 
-                alt="千里江山图"
-            >
-        </div>
-    </div>
-
-    <script>
-        const wrapper = document.querySelector('.painting-wrapper');
-        const container = document.querySelector('.scroll-container');
-        let startX = 0;
-        let startScrollLeft = 0;
-        let isDragging = false;
-        let velocity = 0;
-        let lastX = 0;
-        let lastTime = 0;
-        let animationId = null;
-
-        // 限制位置在画卷范围内
-        function clampPosition(x) {
-            const minX = container.clientWidth - wrapper.scrollWidth;
-            return Math.min(0, Math.max(minX, x));
-        }
-
-        // 惯性动画（刹车效果）
-        function inertia() {
-            if (Math.abs(velocity) < 0.1) {
-                cancelAnimationFrame(animationId);
-                animationId = null;
-                return;
-            }
-            velocity *= 0.9; // 摩擦系数，数值越小刹车越快
-            const currentX = parseFloat(wrapper.style.transform.replace('translateX(', '').replace('px)', '') || 0);
-            const newX = clampPosition(currentX + velocity);
-            wrapper.style.transform = `translateX(${newX}px)`;
-            animationId = requestAnimationFrame(inertia);
-        }
-
-        // 鼠标按下
-        container.addEventListener('mousedown', (e) => {
-            isDragging = true;
-            startX = e.clientX;
-            lastX = e.clientX;
-            startScrollLeft = parseFloat(wrapper.style.transform.replace('translateX(', '').replace('px)', '') || 0);
-            lastTime = Date.now();
-            if (animationId) cancelAnimationFrame(animationId);
-        });
-
-        // 鼠标移动
-        container.addEventListener('mousemove', (e) => {
-            if (!isDragging) return;
-            const dx = e.clientX - startX;
-            const newX = clampPosition(startScrollLeft + dx);
-            wrapper.style.transform = `translateX(${newX}px)`;
-            
-            // 计算拖拽速度
-            const dt = Date.now() - lastTime;
-            if (dt > 0) {
-                velocity = (e.clientX - lastX) / dt * 15;
-            }
-            lastX = e.clientX;
-            lastTime = Date.now();
-        });
-
-        // 鼠标松开
-        container.addEventListener('mouseup', () => {
-            isDragging = false;
-            if (Math.abs(velocity) > 0.1) {
-                animationId = requestAnimationFrame(inertia);
-            }
-        });
-
-        // 鼠标离开
-        container.addEventListener('mouseleave', () => {
-            isDragging = false;
-        });
-    </script>
+    <div class="scroll-banner"></div>
 </body>
 </html>
