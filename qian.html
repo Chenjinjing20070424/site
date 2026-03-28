@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>千里江山图 纵向流动</title>
+    <title>千里江山图 先快后慢纵向流动</title>
     <style>
         * {
             margin: 0;
@@ -11,25 +11,30 @@
             box-sizing: border-box;
         }
         body {
-            min-height: 100vh;
             background: #000;
             overflow: hidden;
+            height: 100vh;
         }
-        .scroll-banner {
+        .container {
+            height: 200vh; /* 两张图高度 */
+            animation: scrollMove 90s ease-out infinite;
+        }
+        img {
             width: 100vw;
             height: 100vh;
-            /* 用国内稳定可访问的千里江山图竖版链接 */
-            background: url("https://img1.baidu.com/it/u=2747330779,2275763028&fm=26&fmt=auto&app=138&f=JPEG?w=960&h=3989") repeat-y;
-            background-size: 100% auto;
-            animation: scrollMove 90s linear infinite;
+            object-fit: cover;
+            display: block;
         }
         @keyframes scrollMove {
-            0% { background-position: center 0; }
-            100% { background-position: center -100%; }
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-100vh); }
         }
     </style>
 </head>
 <body>
-    <div class="scroll-banner"></div>
+    <div class="container">
+        < img src="https://p1.ssl.qhimg.com/t01d8a8a4ef07a8b7c0.jpg" alt="千里江山图">
+        < img src="https://p1.ssl.qhimg.com/t01d8a8a4ef07a8b7c0.jpg" alt="千里江山图">
+    </div>
 </body>
 </html>
