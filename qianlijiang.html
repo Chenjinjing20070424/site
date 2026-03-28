@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>千里江山图 横向流动动画</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            min-height: 100vh;
+            background: #000;
+        }
+        .scroll-banner {
+            width: 100vw;
+            height: 600px;"C:\Users\陈金晶\Desktop\4cd9b02be67a8dcd87a356db3eea9c0f.jpg"
+            background: url("https://picsum.photos/id/1036/1200/600") repeat-x;
+            background-size: auto 100%;
+            animation: scrollMove 60s linear infinite;
+        }
+        @keyframes scrollMove {
+            0% { background-position: 0 center; }
+            100% { background-position: -200% center; }
+        }
+    </style>
+</head>
+<body>
+    <div class="scroll-banner"></div>
+</body>
+</html>
