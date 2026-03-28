@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>千里江山图 先快后慢纵向流动</title>
+    <title>千里江山图 纵向流动</title>
     <style>
         * {
             margin: 0;
@@ -18,11 +18,10 @@
         .scroll-banner {
             width: 100vw;
             height: 100vh;
-            /* 国内稳定可访问的千里江山图竖版链接 */
+            /* 用国内稳定可访问的千里江山图竖版链接 */
             background: url("https://img1.baidu.com/it/u=2747330779,2275763028&fm=26&fmt=auto&app=138&f=JPEG?w=960&h=3989") repeat-y;
             background-size: 100% auto;
-            /* 关键：用 ease-out 实现先快后慢 */
-            animation: scrollMove 90s ease-out infinite;
+            animation: scrollMove 90s linear infinite;
         }
         @keyframes scrollMove {
             0% { background-position: center 0; }
@@ -34,3 +33,4 @@
     <div class="scroll-banner"></div>
 </body>
 </html>
+
