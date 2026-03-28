@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>千里江山图 - 缓动放映</title>
+    <title>千里江山图 - 惯性拖拽放映</title>
     <style>
         * {
             margin: 0;
@@ -12,33 +12,30 @@
         }
         body {
             overflow: hidden;
-            background: #f0e6d2;
+            background: #1a3a2a;
+            height: 100vh;
         }
         .scroll-container {
             width: 100vw;
             height: 100vh;
             overflow: hidden;
             position: relative;
+            cursor: grab;
+        }
+        .scroll-container:active {
+            cursor: grabbing;
         }
         .painting-wrapper {
             height: 100%;
             display: flex;
             align-items: center;
-            /* 先快后慢的缓动动画，总时长30秒 */
-            animation: slowScroll 30s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+            position: absolute;
         }
         .painting {
             height: 90vh;
             width: auto;
             object-fit: contain;
-        }
-        @keyframes slowScroll {
-            0% {
-                transform: translateX(0);
-            }
-            100% {
-                transform: translateX(calc(-100% + 100vw));
-            }
+            user-select: none;
         }
     </style>
 </head>
@@ -46,11 +43,85 @@
     <div class="scroll-container">
         <div class="painting-wrapper">
             < img 
-                src="https://picsum.photos/id/1036/3989/960" 
-                alt="千里江山图" 
-                class="painting"
+                class="painting" 
+                id="paintingImg"
+                src="https://upload.wikimedia.org/wikipedia/commons/9/96/%E5%8D%83%E9%87%8C%E6%B1%9F%E5%B1%B1%E5%9B%BE_%E5%8C%97%E5%AE%AE%E8%B8_%E7%8E%8B%E5%B8%8C%E5%AE%AD%E5%AE%9.jpg" 
+                alt="千里江山图 王希孟 北宋 故宫博物院藏"
+                crossorigin="anonymous"
+                referrerpolicy="no-referrer"
             >
         </div>
     </div>
+
+    <script>
+        const wrapper = document.querySelector('.painting-wrapper');
+        const container = document.querySelector('.scroll-container');
+        let startX = 0;
+        let startScrollLeft = 0;
+        let isDragging = false;
+        let velocity = 0;
+        let lastX = 0;
+        let lastTime = 0;
+        let animationId = null;
+
+        // 限制位置在画卷范围内
+        function clampPosition(x) {
+            const minX = container.clientWidth - wrapper.scrollWidth;
+            return Math.min(0, Math.max(minX, x));
+        }
+
+        // 惯性动画（刹车效果）
+        function inertia() {
+            if (Math.abs(velocity) < 0.1) {
+                cancelAnimationFrame(animationId);
+                animationId = null;
+                return;
+            }
+            velocity *= 0.9; // 摩擦系数，数值越小刹车越快
+            const currentX = parseFloat(wrapper.style.transform.replace('translateX(', '').replace('px)', '') || 0);
+            const newX = clampPosition(currentX + velocity);
+            wrapper.style.transform = `translateX(${newX}px)`;
+            animationId = requestAnimationFrame(inertia);
+        }
+
+        // 鼠标按下
+        container.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            startX = e.clientX;
+            lastX = e.clientX;
+            startScrollLeft = parseFloat(wrapper.style.transform.replace('translateX(', '').replace('px)', '') || 0);
+            lastTime = Date.now();
+            if (animationId) cancelAnimationFrame(animationId);
+        });
+
+        // 鼠标移动
+        container.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+            const dx = e.clientX - startX;
+            const newX = clampPosition(startScrollLeft + dx);
+            wrapper.style.transform = `translateX(${newX}px)`;
+            
+            // 计算拖拽速度
+            const dt = Date.now() - lastTime;
+            if (dt > 0) {
+                velocity = (e.clientX - lastX) / dt * 15;
+            }
+            lastX = e.clientX;
+            lastTime = Date.now();
+        });
+
+        // 鼠标松开
+        container.addEventListener('mouseup', () => {
+            isDragging = false;
+            if (Math.abs(velocity) > 0.1) {
+                animationId = requestAnimationFrame(inertia);
+            }
+        });
+
+        // 鼠标离开
+        container.addEventListener('mouseleave', () => {
+            isDragging = false;
+        });
+    </script>
 </body>
 </html>
