@@ -1,59 +1,125 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-CN">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>千里江山图 - 惯性拖拽放映</title>
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
         body {
-            font-family: Arial, sans-serif;
-            max-width: 800px;
-            margin: 20px auto;
-            padding: 0 20px;
+            overflow: hidden;
+            background: #1a3a2a;
+            height: 100vh;
         }
-        h1 {
-            font-family: 'Segoe UI', sans-serif;
-            color: #333;
+        .scroll-container {
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            position: relative;
+            cursor: grab;
         }
-        ul {
-            list-style-type: none;
-            padding-left: 0;
+        .scroll-container:active {
+            cursor: grabbing;
         }
-        li {
-            padding: 8px;
-            margin: 4px 0;
+        .painting-wrapper {
+            height: 100%;
+            display: flex;
+            align-items: center;
+            position: absolute;
         }
-        .meat {
-            background-color: lightcoral;
-        }
-        .vegetable {
-            background-color: lightgreen;
-        }
-        .dairy {
-            background-color: lightgoldenrodyellow;
-        }
-        .instructions {
-            font-style: italic;
+        .painting {
+            height: 90vh;
+            width: auto;
+            object-fit: contain;
+            user-select: none;
         }
     </style>
 </head>
 <body>
-    <h1>Grilled Cheese Sandwich with Bacon and Tomato</h1>
-
-    <h2>Ingredients</h2>
-    <ul>
-        <li class="meat">Bacon</li>
-        <li class="dairy">Sliced cheese</li>
-        <li class="dairy">Butter</li>
-        <li class="vegetable">Tomato slices</li>
-        <li>Bread slices</li>
-    </ul>
-
-    <h2>Instructions</h2>
-    <div class="instructions">
-        <p>1. Cook the bacon in a pan until crispy, then set aside.</p >
-        <p>2. Butter one side of each bread slice.</p >
-        <p>3. Place a slice of cheese on the unbuttered side of one bread slice.</p >
-        <p>4. Add cooked bacon and tomato slices on top of the cheese.</p >
-        <p>5. Cover with another slice of bread, buttered side facing out.</p >
-        <p>6. Grill the sandwich in a pan over medium heat until both sides are golden brown and the cheese is melted.</p >
+    <div class="scroll-container">
+        <div class="painting-wrapper">
+            < img 
+                class="painting" 
+                id="paintingImg"
+                src="https://picsum.photos/id/1036/3989/960" 
+                alt="千里江山图"
+            >
+        </div>
     </div>
+
+    <script>
+        const wrapper = document.querySelector('.painting-wrapper');
+        const container = document.querySelector('.scroll-container');
+        let startX = 0;
+        let startScrollLeft = 0;
+        let isDragging = false;
+        let velocity = 0;
+        let lastX = 0;
+        let lastTime = 0;
+        let animationId = null;
+
+        // 限制位置在画卷范围内
+        function clampPosition(x) {
+            const minX = container.clientWidth - wrapper.scrollWidth;
+            return Math.min(0, Math.max(minX, x));
+        }
+
+        // 惯性动画（刹车效果）
+        function inertia() {
+            if (Math.abs(velocity) < 0.1) {
+                cancelAnimationFrame(animationId);
+                animationId = null;
+                return;
+            }
+            velocity *= 0.9; // 摩擦系数，数值越小刹车越快
+            const currentX = parseFloat(wrapper.style.transform.replace('translateX(', '').replace('px)', '') || 0);
+            const newX = clampPosition(currentX + velocity);
+            wrapper.style.transform = `translateX(${newX}px)`;
+            animationId = requestAnimationFrame(inertia);
+        }
+
+        // 鼠标按下
+        container.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            startX = e.clientX;
+            lastX = e.clientX;
+            startScrollLeft = parseFloat(wrapper.style.transform.replace('translateX(', '').replace('px)', '') || 0);
+            lastTime = Date.now();
+            if (animationId) cancelAnimationFrame(animationId);
+        });
+
+        // 鼠标移动
+        container.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+            const dx = e.clientX - startX;
+            const newX = clampPosition(startScrollLeft + dx);
+            wrapper.style.transform = `translateX(${newX}px)`;
+            
+            // 计算拖拽速度
+            const dt = Date.now() - lastTime;
+            if (dt > 0) {
+                velocity = (e.clientX - lastX) / dt * 15;
+            }
+            lastX = e.clientX;
+            lastTime = Date.now();
+        });
+
+        // 鼠标松开
+        container.addEventListener('mouseup', () => {
+            isDragging = false;
+            if (Math.abs(velocity) > 0.1) {
+                animationId = requestAnimationFrame(inertia);
+            }
+        });
+
+        // 鼠标离开
+        container.addEventListener('mouseleave', () => {
+            isDragging = false;
+        });
+    </script>
 </body>
 </html>
