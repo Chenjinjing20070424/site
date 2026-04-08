@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Solve Quadratic Equation</title>
+</head>
+<body>
+    <script>
+        // Step 1: Get coefficients a, b, c from user via prompt
+        let aStr = prompt("Please enter coefficient a (a > 0):");
+        let bStr = prompt("Please enter coefficient b:");
+        let cStr = prompt("Please enter coefficient c:");
+
+        // Step 2: Convert input strings to floating-point numbers
+        let a = parseFloat(aStr);
+        let b = parseFloat(bStr);
+        let c = parseFloat(cStr);
+
+        // Step 3: Calculate discriminant (delta)
+        let delta = b * b - 4 * a * c;
+
+        // Step 4: Calculate two roots x1 and x2 (assume delta >= 0, a > 0)
+        let x1 = (-b + Math.sqrt(delta)) / (2 * a);
+        let x2 = (-b - Math.sqrt(delta)) / (2 * a);
+
+        // Step 5: Show results to user via alert
+        alert(`The roots of the quadratic equation are:\nx1 = ${x1.toFixed(4)}\nx2 = ${x2.toFixed(4)}`);
+
+        // Step 6: Print results to console via console.log
+        console.log("Quadratic equation solution results:");
+        console.log(`Coefficients: a = ${a}, b = ${b}, c = ${c}`);
+        console.log(`Discriminant (delta) = ${delta}`);
+        console.log(`x1 = ${x1}, x2 = ${x2}`);
+    </script>
+</body>
+</html>
