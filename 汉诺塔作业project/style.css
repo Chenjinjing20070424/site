@@ -1,0 +1,113 @@
+/* 全局基础样式 */
+body{
+    background: linear-gradient(to bottom, #87CEEB, #E6E6FA);
+    text-align: center;
+    font-family: Arial, sans-serif;
+    min-height: 100vh;
+    margin: 0;
+    padding: 20px 0;
+}
+
+/* 游戏整体容器 */
+.box{
+    width: 800px;
+    margin: 0 auto;
+    background: rgba(255,255,255,0.8);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+/* 控制按钮区域 */
+.control{
+    margin: 20px 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+.control button{
+    padding: 8px 16px;
+    border: none;
+    border-radius: 6px;
+    background: #4CAF50;
+    color: white;
+    cursor: pointer;
+    font-size: 14px;
+}
+.control button:hover{
+    background: #45a049;
+}
+#num{
+    padding: 6px;
+    width: 60px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+/* 游戏主区域（3D透视效果在这里实现） */
+.game{
+    display: flex;
+    justify-content: space-around;
+    align-items: flex-end;
+    height: 350px;
+    perspective: 600px; /* 关键3D属性，营造立体效果 */
+    margin-top: 30px;
+}
+
+/* 柱子样式 */
+.tower{
+    width: 20px;
+    height: 280px;
+    background: linear-gradient(to right, #965c38, #c48b5a, #965c38);
+    border-radius: 10px 10px 0 0;
+    display: flex;
+    flex-direction: column-reverse;
+    align-items: center;
+    position: relative;
+}
+.tower::after{
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100px;
+    height: 10px;
+    background: #965c38;
+    border-radius: 4px;
+}
+
+/* 圆盘样式（彩虹渐变，不同大小颜色不同） */
+.disk{
+    height: 26px;
+    border-radius: 6px;
+    margin: 2px 0;
+    cursor: pointer;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.3);
+    transition: transform 0.2s ease;
+}
+/* 给不同大小的圆盘设置不同颜色 */
+.disk[data-size="1"] { background: linear-gradient(180deg, #ff9999, #ff6666); }
+.disk[data-size="2"] { background: linear-gradient(180deg, #ffcc99, #ff9966); }
+.disk[data-size="3"] { background: linear-gradient(180deg, #ffff99, #ffcc66); }
+.disk[data-size="4"] { background: linear-gradient(180deg, #ccff99, #99ff66); }
+.disk[data-size="5"] { background: linear-gradient(180deg, #99ff99, #66ff66); }
+.disk[data-size="6"] { background: linear-gradient(180deg, #99ffff, #66ffff); }
+.disk[data-size="7"] { background: linear-gradient(180deg, #9999ff, #6666ff); }
+.disk[data-size="8"] { background: linear-gradient(180deg, #ff99ff, #ff66ff); }
+
+/* 选中状态的圆盘样式 */
+.disk.active{
+    transform: translateY(-15px);
+    box-shadow: 0 0 12px gold;
+}
+
+/* 提示文字样式 */
+#tip{
+    margin-top: 20px;
+    font-size: 18px;
+    font-weight: bold;
+    min-height: 24px;
+}
