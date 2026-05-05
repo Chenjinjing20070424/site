@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>汉诺塔小游戏 | 支持3-8个圆盘</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="box">
+    <h2>汉诺塔 Project 作业（升级版）</h2>
+
+    <div class="control">
+        <span>圆盘数量（3-8）：</span>
+        <input type="number" id="num" min="3" max="8" value="5">
+        <button id="reset">重置游戏</button>
+        <button id="auto">自动解题</button>
+        <p>移动次数：<span id="count">0</span></p >
+    </div>
+
+    <!-- 游戏区域：三根柱子 -->
+    <div class="game">
+        <div class="tower" data-id="0"></div>
+        <div class="tower" data-id="1"></div>
+        <div class="tower" data-id="2"></div>
+    </div>
+
+    <!-- 提示文字区域 -->
+    <div id="tip"></div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
